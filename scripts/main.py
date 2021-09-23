@@ -118,7 +118,7 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
         result['links'] = links
         results.append(result)
     level -= 1
-    with open(f'results_{program_start_time}.json', 'w') as f:
+    with open('results.json', 'w') as f:
         f.write(json.dumps(results, cls=DateTimeEncoder))
 
 def get_websites_from_csv(fname):
