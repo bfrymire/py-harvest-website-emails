@@ -70,13 +70,19 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
             r = requests.get(link)
             # Skip if we don't get a good response
             if r.status_code != 200:
-                harvest_print(f'Skipping, got status code: {r.status_code}', level=level+1)
+                status = f'Skipping, got status code: {r.status_code}'
+                if index == 1:
+                    result['status'] = status
+                harvest_print(status, level=level+1)
                 continue
             soup = bs(r.text, 'html.parser')
             body = soup.find('body')
             # Skip if the link doesn't have a body tag
             if not body:
-                harvest_print('Skipping, HTML <body> not found', level=level+1)
+                status = 'Skipping, HTML <body> not found'
+                if index == 1:
+                    result['status'] = status
+                harvest_print(status, level=level+1)
                 continue
             if verbosity == 2:
                 harvest_print(f'Harvesting links from current url: {r.url}', level=level)
