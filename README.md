@@ -1,6 +1,10 @@
 # PY Harvest Website Emails
 
-A simple Python CLI that scrapes email addresses from a spreadsheet of websites.
+A Python CLI that steps through links of a website and scrapes email addresses.
+
+## Usage
+
+To get started, create a CSV file that has a column header `website` and include URLs you want to scrape to the column.
 
 ## Tests
 
