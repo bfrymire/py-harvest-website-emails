@@ -13,3 +13,7 @@ Run unit tests:
 ```py
 python -m unittests --v
 ```
+
+## License
+
+View the `LICENSE` file.
