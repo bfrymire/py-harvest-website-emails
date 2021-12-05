@@ -110,6 +110,12 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
             found_emails += mailto_links
             new_emails = 0
             for email in found_emails:
+                # Remove mailto links from the email address
+                mailto = "mailto:"
+                mailto_len = len(mailto)
+                if email.startswith(mailto):
+                    email = email[mailto_len:]
+                # Check for duplicate email
                 if email not in emails:
                     new_emails += 1
                     emails.append(email)
