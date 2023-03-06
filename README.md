@@ -2,6 +2,15 @@
 
 A Python CLI that steps through links of a website and scrapes email addresses.
 
+## Installation
+
+1. Clone the repo
+2. Install requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Usage
 
 To get started, create a CSV file that has a column header `website` and include URLs you want to scrape to the column.
@@ -10,33 +19,13 @@ When running the CLI, the `--input` option must be provided pointing to the loca
 
 ### CLI Options
 
-**--input, --i** - CSV file that holds list of websites to harvest.
-
-Type: `str`
-
-**--max-pages, --p** - Maximum number of pages to walk.
-
-Type: `int`
-
-Default: `300`
-
-**--max-emails, --e** - Maximum number email addresses to harvest.
-
-Type: `int`
-
-Default: `20`
-
-**--max-time, --t** - Maximum amount of time to harvest each website in seconds.
-
-Type: `int`
-
-Default: `-1`, no time limit
-
-**--verbosity, --v** - Verbosity of output.
-
-Type: `int`
-
-Default: `2`
+| Option | Description | Type | Default |
+| -- | -- | -- | -- |
+| `--input`, `--i` | CSV file that holds list of websites to harvest from. | `str` | _N/A_ |
+| `--max-pages`, `--p` | Maximum number of pages to walk. | `int` | 300 |
+| `--max-emails`, `--e` | Maximum number email addresses to harvest. | `int` | 20 |
+| `--max-time`, `--t` | Maximum amount of time to harvest each website in seconds. | `int` | -1 _(no time limit)_ |
+| `--verbosity`, `--v` | Verbosity of output. | `int` | 2 |
 
 ## Tests
 
@@ -48,4 +37,4 @@ python -m unittests --v
 
 ## License
 
-View the [`LICENSE`](https://github.com/bfrymire/py-harvest-website-emails/blob/master/LICENSE) file.
+[MIT License](https://github.com/bfrymire/py-harvest-website-emails/blob/master/LICENSE)
