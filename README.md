@@ -13,7 +13,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-To get started, create a CSV file that has a column header `website` and include URLs you want to scrape to the column.
+To get started, create a CSV file that has a column header `websites` and include URLs you want to scrape to the column.
 
 When running the CLI, the `--input` option must be provided pointing to the location of the CSV file.
 
