@@ -2,7 +2,6 @@ import click
 import re
 import csv
 import json
-import os
 from pathlib import Path
 from datetime import datetime, timedelta
 
