@@ -1,8 +1,8 @@
-import pathlib
 import click
 import re
 import csv
 import json
+import os
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -34,7 +34,7 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
         start_time = datetime.now()
         base_url = urlparse(url).netloc
         result = {
-            'website': url,
+            'websites': url,
             'start_time': start_time,
             'base_url': base_url,
         }
@@ -135,11 +135,21 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
 
 def get_websites_from_csv(fname):
     if not Path(fname).exists():
-        print(f'Exiting program - file does not exist: {fname}')
+        create_websites_csv(fname)
+        print(f'Exiting program.')
         quit()
     with open(fname) as f:
         reader = csv.DictReader(f)
-        return [x['website'] for x in reader]
+        return [x['websites'] for x in reader]
+
+def create_websites_csv(fname='example.csv'):
+    if Path(fname).exists():
+        action = 'already exists'
+    else:
+        action = 'created'
+        with open(fname, 'w') as f:
+            f.write('websites,\n')
+    print(f'CSV file {fname} {action}. Populate "websites" column with your URLs.')
 
 def within_allocated_time(delta):
     return datetime.now() <= delta
