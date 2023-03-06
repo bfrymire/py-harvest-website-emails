@@ -147,8 +147,8 @@ def within_allocated_time(delta):
 def harvest_print(text, level=0, indent="  "):
     print(f'{indent*level}{text}')
 
-def clamp(n, minimum, maximum):
-    return max(minimum, min(n, maximum))
+def clamp(n, a, b):
+    return min(max(n, min(a, b)), max(a, b))
 
 '''
 Class for dumping dict with datetime or timedelta classes to string
