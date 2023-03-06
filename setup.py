@@ -8,6 +8,8 @@ setup(
         'Click',
         'requests==2.26.0',
         'beautifulsoup4==4.10.0',
+        'selenium==4.8.2',
+        'webdriver-manager==3.8.5'
     ],
     entry_points={
         'console_scripts': [

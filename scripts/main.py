@@ -2,12 +2,18 @@ import click
 import re
 import csv
 import json
+import time
 from pathlib import Path
 from datetime import datetime, timedelta
 
 import requests
 from requests.compat import urlparse
 from bs4 import BeautifulSoup as bs
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 @click.command()
@@ -16,7 +22,8 @@ from bs4 import BeautifulSoup as bs
 @click.option('--max-emails', '--e', default=20, type=int, help='maximum number email addresses to harvest')
 @click.option('--max-time', '--t', default=-1, type=int, help='maximum amount of time to harvest each website in seconds')
 @click.option('--verbosity', '--v', default=2, type=int, help='verbosity of output')
-def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
+@click.option('--wait-time', '--w', default=1000, type=int, help='time to wait in milliseconds')
+def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity, wait_time):
     verbosity = clamp(verbosity, 0, 2)
     delta = timedelta(seconds=max_time)
     website_urls = get_websites_from_csv(input)
@@ -24,6 +31,18 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
     results = []
     program_start_time = datetime.now()
     p = re.compile(r'([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)')
+    service = Service(ChromeDriverManager().install())
+    options = Options()
+    # options.add_argument('--headless')
+    # options.add_argument('--window-size=1920,1080')
+    options.add_argument('--disable-gup')
+    options.add_argument('--disable-infobars')
+    options.add_argument('--hide-scrollbars')
+    options.add_argument('--dns-prefetch-disable')
+    options.add_argument('--disable-extensions')
+    options.add_argument('--incognito')
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.maximize_window()
     for url in website_urls:
         start_time = datetime.now()
         base_url = urlparse(url).netloc
@@ -40,6 +59,8 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
         level += 1
         while True:
             index += 1
+            if index > 0:
+                time.sleep(wait_time / 1000)
             if index >= len(links):
                 status = 'Reached end of harvested links'
                 result['status'] = status
@@ -61,15 +82,18 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
                 harvest_print(status, level=level)
                 break
             link = links[index]
-            r = requests.get(link)
+            # Selenium is unable to get the status code of the request, so we use requests here for that
+            r = requests.head(link)
             # Skip if we don't get a good response
-            if r.status_code != 200:
+            if not r.ok:
                 status = f'Skipping, got status code: {r.status_code}'
                 if index == 1:
                     result['status'] = status
                 harvest_print(status, level=level+1)
                 continue
-            soup = bs(r.text, 'html.parser')
+            driver.get(link)
+            time.sleep(3)
+            soup = bs(driver.page_source, 'html.parser')
             body = soup.find('body')
             # Skip if the link doesn't have a body tag
             if not body:
@@ -80,7 +104,10 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
                 continue
             if verbosity == 2:
                 harvest_print(f'Harvesting links from current url: {r.url}', level=level)
+            print(body)
+            # TODO: fix not getting the URL of href if it starts with '#'
             a_links = [x['href'] for x in body.find_all('a', href=True) if urlparse(x['href']).netloc == base_url]
+            print(a_links)
             new_links = 0
             for a_link in a_links:
                 if a_link not in links and a_link not in exclude_links:
@@ -126,6 +153,9 @@ def harvest_website_emails(input, max_pages, max_emails, max_time, verbosity):
     level -= 1
     with open('results.json', 'w') as f:
         f.write(json.dumps(results, cls=DateTimeEncoder))
+    if verbosity == 2:
+        print('Closing browser session')
+    driver.quit()
 
 def get_websites_from_csv(fname):
     if not Path(fname).exists():
