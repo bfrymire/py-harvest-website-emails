@@ -9,11 +9,6 @@ import requests
 from requests.compat import urlparse
 from bs4 import BeautifulSoup as bs
 
-@click.command()
-def cli():
-    """Example script."""
-    click.echo('Hello World!')
-
 
 @click.command()
 @click.option('--input', '--i', type=str, help='CSV file that holds list of websites to harvest')
