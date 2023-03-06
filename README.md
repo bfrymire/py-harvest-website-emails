@@ -2,6 +2,8 @@
 
 A Python CLI that steps through links of a website and scrapes email addresses.
 
+Harvest Website Emails uses BeautifulSoup to scrape websites. As a small caveat, websites that populate its elements using JavaScript after render are not scrapable. You would have to use a browser simulator otherwise.
+
 ## Installation
 
 1. Clone the repo
