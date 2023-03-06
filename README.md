@@ -32,7 +32,7 @@ When running the CLI, the `--input` option must be provided pointing to the loca
 Run unit tests:
 
 ```py
-python -m unittests --v
+python -m unittest --v
 ```
 
 ## License
