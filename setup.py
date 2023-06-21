@@ -6,7 +6,7 @@ setup(
     py_modules=['scripts/main'],
     install_requires=[
         'Click',
-        'requests==2.26.0',
+        'requests==2.31.0',
         'beautifulsoup4==4.10.0',
     ],
     entry_points={
